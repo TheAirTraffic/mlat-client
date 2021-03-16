@@ -129,10 +129,10 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
                             self.port = self.theairtrafficPorts[(index + 1) % len(self.theairtrafficPorts)]
                             break
 
-                if self.host == 'feed.theairtraffic.com' and self.basePort != self.port:
-                    log('Connecting to {host}:{port} (trying hard-coded alternate port for theairtraffic)', host=self.host, port=self.port)
-                else:
-                    log('Connecting to {host}:{port}', host=self.host, port=self.port)
+                #if self.host == 'feed.theairtraffic.com' and self.basePort != self.port:
+                #    log('Connecting to {host}:{port} (trying hard-coded alternate port for theairtraffic)', host=self.host, port=self.port)
+                #else:
+                #    log('Connecting to {host}:{port}', host=self.host, port=self.port)
 
                 self.addrlist = socket.getaddrinfo(host=self.host,
                                                    port=self.port,
