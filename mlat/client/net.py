@@ -55,9 +55,14 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
         self.host = host
         self.basePort = port
         self.port = port
+        if self.host == 'feed.theairtraffic.com':
+            self.theairtraffic = True
+        else:
+            self.theairtraffic = False
+        self.theairtrafficPortIndex = 0
+        self.theairtrafficHostIndex = 0
         self.theairtrafficPorts = [ 31090, 64590 ]
-        if self.host == 'feed.theairtraffic.com' and self.basePort == 31090:
-            self.port = 64590
+        self.theairtrafficHosts = [ 'feed1.theairtraffic.com', 'feed2.theairtraffic.com' ]
         self.addrlist = []
         self.state = 'disconnected'
         self.reconnect_at = None
@@ -125,16 +130,11 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
 
             if len(self.addrlist) == 0:
                 # ran out of addresses to try, resolve it again
-                if self.host == 'feed.theairtraffic.com' and self.basePort == 31090:
-                    for index, port in enumerate(self.theairtrafficPorts):
-                        if self.port == port:
-                            self.port = self.theairtrafficPorts[(index + 1) % len(self.theairtrafficPorts)]
-                            break
-
-                #if self.host == 'feed.theairtraffic.com' and self.basePort != self.port:
-                #    log('Connecting to {host}:{port} (trying hard-coded alternate port for theairtraffic)', host=self.host, port=self.port)
-                #else:
-                #    log('Connecting to {host}:{port}', host=self.host, port=self.port)
+                if self.theairtraffic:
+                    self.theairtrafficPortIndex  = (self.theairtrafficPortIndex + 1) % len(self.theairtrafficPorts)
+                    self.theairtrafficHostIndex  = (self.theairtrafficHostIndex + 1) % len(self.theairtrafficHosts)
+                    self.host = self.theairtrafficHosts[self.theairtrafficHostIndex];
+                    self.port = self.theairtrafficPorts[self.theairtrafficPortIndex];
 
                 self.addrlist = socket.getaddrinfo(host=self.host,
                                                    port=self.port,
