@@ -102,7 +102,7 @@ location pin from the coverage maps.""",
     if args.uuid_path is not None:
         uuid_path = [ args.uuid_path ]
     else:
-        uuid_path = [ '/usr/local/share/theairtraffic/tat-uuid', '/boot/tat-uuid' ]
+        uuid_path = [ '/usr/local/share/theairtraffic/theairtraffic-uuid', '/boot/theairtraffic-uuid' ]
 
     server = JsonServerConnection(host=args.server[0], port=args.server[1], uuid_path=uuid_path,
                                   handshake_data={'lat': args.lat,
