@@ -54,15 +54,6 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
         asyncore.dispatcher.__init__(self)
         self.host = host
         self.port = port
-        # check port as well, if port doesn't match, could be direct MLAT
-        if self.host == 'feed.theairtraffic.com' and port == 31090:
-            self.theairtraffic = True
-        else:
-            self.theairtraffic = False
-        self.theairtrafficPortIndex = 0
-        self.theairtrafficHostIndex = 0
-        self.theairtrafficPorts = [ 31090, 64590 ]
-        self.theairtrafficHosts = [ 'feed1.theairtraffic.com', 'feed2.theairtraffic.com' ]
         self.addrlist = []
         self.state = 'disconnected'
         self.reconnect_at = None
@@ -139,12 +130,6 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
 
             if len(self.addrlist) == 0:
                 # ran out of addresses to try, resolve it again
-                if self.theairtraffic:
-                    self.theairtrafficPortIndex  = (self.theairtrafficPortIndex + 1) % len(self.theairtrafficPorts)
-                    self.theairtrafficHostIndex  = (self.theairtrafficHostIndex + 1) % len(self.theairtrafficHosts)
-                    self.host = self.theairtrafficHosts[self.theairtrafficHostIndex];
-                    self.port = self.theairtrafficPorts[self.theairtrafficPortIndex];
-
                 self.addrlist = socket.getaddrinfo(host=self.host,
                                                    port=self.port,
                                                    family=socket.AF_UNSPEC,
